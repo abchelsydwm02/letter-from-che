@@ -1,0 +1,667 @@
+from IPython.display import HTML
+
+html_content = """
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>For You</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Parisienne&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    font-family:'Poppins',sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+    linear-gradient(
+        135deg,
+        #2b0b12,
+        #4a1626,
+        #6b1f35,
+        #2a0a12
+    );
+    position:relative;
+}
+
+/* GLOW */
+
+body::before,
+body::after{
+    content:'';
+    position:absolute;
+    width:450px;
+    height:450px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.03);
+    filter:blur(100px);
+}
+
+body::before{
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+    bottom:-120px;
+    right:-120px;
+}
+
+/* PARTICLES */
+
+.sparkle{
+    position:absolute;
+    color:white;
+    animation:float 5s linear infinite;
+    opacity:0.7;
+}
+
+@keyframes float{
+
+    from{
+        transform:translateY(100vh);
+    }
+
+    to{
+        transform:translateY(-100px);
+    }
+
+}
+
+/* CARD */
+
+.glass,
+.letter{
+    width:370px;
+    padding:35px;
+    border-radius:30px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.08);
+    text-align:center;
+    box-shadow:
+    0 8px 32px rgba(0,0,0,0.3);
+    z-index:10;
+}
+
+/* TITLE */
+
+h2{
+    color:white;
+    margin-bottom:22px;
+    font-weight:500;
+}
+
+/* DISPLAY */
+
+.display{
+    height:58px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.08);
+    margin-bottom:22px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:24px;
+    letter-spacing:8px;
+}
+
+/* KEYPAD */
+
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.key{
+    height:60px;
+    border:none;
+    border-radius:18px;
+    background:
+    linear-gradient(
+        145deg,
+        #7f1d2d,
+        #5b1321
+    );
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.key:hover{
+    transform:translateY(-3px);
+}
+
+/* GAME */
+
+#gameArea{
+    position:relative;
+    width:300px;
+    height:320px;
+    overflow:hidden;
+    margin:auto;
+}
+
+.flying-heart{
+    position:absolute;
+    font-size:36px;
+    cursor:pointer;
+    animation:fly 4s linear forwards;
+}
+
+@keyframes fly{
+
+    from{
+        transform:translateY(300px);
+        opacity:0;
+    }
+
+    to{
+        transform:translateY(-250px);
+        opacity:1;
+    }
+
+}
+
+/* ENVELOPES */
+
+.envelope-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-top:25px;
+}
+
+.envelope{
+    width:150px;
+    height:110px;
+    background:white;
+    border-radius:16px;
+    position:relative;
+    cursor:pointer;
+    overflow:hidden;
+    transition:0.4s;
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.3);
+}
+
+.envelope:hover{
+    transform:translateY(-6px);
+}
+
+.envelope::before{
+    content:'';
+    position:absolute;
+    width:0;
+    height:0;
+    border-left:75px solid transparent;
+    border-right:75px solid transparent;
+    border-top:55px solid #7f1d2d;
+    top:0;
+    left:0;
+    transform-origin:top;
+    transition:1s;
+}
+
+.envelope.open::before{
+    transform:rotateX(180deg);
+}
+
+.heart-center{
+    position:absolute;
+    top:40px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:28px;
+    color:#7f1d2d;
+}
+
+.envelope-title{
+    position:absolute;
+    bottom:10px;
+    width:100%;
+    text-align:center;
+    font-size:12px;
+    color:#7f1d2d;
+    font-weight:500;
+}
+
+/* LETTER */
+
+.title{
+    font-size:52px;
+    color:white;
+    margin-bottom:20px;
+    font-family:'Parisienne',cursive;
+}
+
+.typing{
+    color:white;
+    font-size:18px;
+    line-height:1.9;
+    min-height:220px;
+}
+
+.cursor{
+    display:inline-block;
+    width:3px;
+    height:22px;
+    background:white;
+    animation:blink 0.7s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:0;
+    }
+}
+
+/* PETALS */
+
+.petal{
+    position:absolute;
+    top:-50px;
+    animation:fall linear forwards;
+    z-index:999;
+    pointer-events:none;
+}
+
+@keyframes fall{
+
+    0%{
+        transform:
+        translateY(-50px)
+        rotate(0deg);
+        opacity:1;
+    }
+
+    100%{
+        transform:
+        translateY(110vh)
+        rotate(360deg);
+        opacity:0;
+    }
+
+}
+
+/* HIDDEN */
+
+.hidden{
+    display:none;
+}
+
+p,
+#score{
+    color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SPARKLES -->
+
+<div class="sparkle" style="left:10%; animation-duration:7s;">✨</div>
+<div class="sparkle" style="left:30%; animation-duration:7s;">💖</div>
+<div class="sparkle" style="left:60%; animation-duration:9s;">🌹</div>
+<div class="sparkle" style="left:70%; animation-duration:10s;">✨</div>
+<div class="sparkle" style="left:90%; animation-duration:8s;">💖</div>
+
+<!-- PASSWORD -->
+
+<div class="glass" id="passwordPage">
+
+    <h2>Enter Your Password ✨</h2>
+
+    <div class="display" id="display"></div>
+
+    <div class="keypad">
+
+        <button class="key">1</button>
+        <button class="key">2</button>
+        <button class="key">3</button>
+
+        <button class="key">4</button>
+        <button class="key">5</button>
+        <button class="key">6</button>
+
+        <button class="key">7</button>
+        <button class="key">8</button>
+        <button class="key">9</button>
+
+        <button class="key">0</button>
+        <button class="key">⌫</button>
+        <button class="key">💖</button>
+
+    </div>
+
+</div>
+
+<!-- GAME -->
+
+<div class="glass hidden" id="gamePage">
+
+    <h2>Pencetin 3 Love 💖</h2>
+
+    <p style="margin-bottom:20px;">
+        tangkap love yang terbang
+    </p>
+
+    <div id="score">
+        0 / 3
+    </div>
+
+    <div id="gameArea"></div>
+
+</div>
+
+<!-- ENVELOPES -->
+
+<div class="glass hidden" id="envelopePage">
+
+    <h2>
+        Pilih amplop sesuai suasana hati kalian
+    </h2>
+
+    <div class="envelope-grid">
+
+        <div class="envelope"
+        onclick="openLetter(1)">
+
+            <div class="heart-center">❤</div>
+
+            <div class="envelope-title">
+                hopeless romantic
+            </div>
+
+        </div>
+
+        <div class="envelope"
+        onclick="openLetter(2)">
+
+            <div class="heart-center">❤</div>
+
+            <div class="envelope-title">
+                butterfly era
+            </div>
+
+        </div>
+
+        <div class="envelope"
+        onclick="openLetter(3)">
+
+            <div class="heart-center">❤</div>
+
+            <div class="envelope-title">
+                broken heart
+            </div>
+
+        </div>
+
+        <div class="envelope"
+        onclick="openLetter(4)">
+
+            <div class="heart-center">❤</div>
+
+            <div class="envelope-title">
+                Kehidupan
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LETTER -->
+
+<div class="letter hidden" id="letterPage">
+
+    <div class="title">
+        For You
+    </div>
+
+    <div class="typing">
+        <span id="text"></span>
+        <span class="cursor"></span>
+    </div>
+
+</div>
+
+<script>
+
+const PASSWORD = "12345";
+
+let input = "";
+let score = 0;
+
+const messages = {
+
+1:
+"Heiii...ga ada someone to talk ya? liat TikTok sama IG isinya ikut trend romantis dan yaps kamu pasti bilang 'When ya?' kasian ya...tenang bujang One Day. Lebih baik terlambat bikin trend daripada bertemu yang tidak tepat.",
+
+2:
+"Cie...cie ada yang lagi butterfly era nih? senyumnya ga bisa bohong, dia baik banget ya sama kamu? Bahagia selalu ya, I wish senyum yang merekah hari ini akan merekah seterusnya. Happy for you 💖",
+
+3:
+"Heii what's wrong? it's okay, nikmati rasa sakitnya nikmati sedihnya, nangis aja gapapa, tapi setelah itu janji bakal jadi lebih kuat. Aku yakin kamu bisa lalui dengan kuat. Merelakan sesuatu yang berusaha pergi dari kamu emang ga mudah, tapi dia juga ga baik buat kamu. Kamu terlalu berharga untuk disakiti. Biarkan dia pergi.",
+
+4:
+"lagi capek ya sama dunia? it's okay, dunia emang tempatnya capek,tapi kamu harus tetap percaya disetiap kesulitan pasti ada kemudahan,badainya akan berlalu, di depan sana ada kebahagian yang menanti kamu. Terima kasih ya sudah berjuang sejauh ini, kamu tuh hebat banget...sedikit lagi jangan nyerah. Okay?"
+
+};
+
+const display =
+document.getElementById("display");
+
+/* PASSWORD */
+
+document.querySelectorAll(".key")
+.forEach(button=>{
+
+button.addEventListener("click",()=>{
+
+const value = button.innerText;
+
+if(value === "⌫"){
+
+input = input.slice(0,-1);
+
+}
+
+else if(value === "💖"){
+
+if(input === PASSWORD){
+
+document
+.getElementById("passwordPage")
+.classList.add("hidden");
+
+document
+.getElementById("gamePage")
+.classList.remove("hidden");
+
+startGame();
+
+}
+
+else{
+
+alert("Password salah 💔");
+input = "";
+
+}
+
+}
+
+else{
+
+if(input.length < 5){
+
+input += value;
+
+}
+
+}
+
+display.innerText =
+"•".repeat(input.length);
+
+});
+
+});
+
+/* GAME */
+
+function startGame(){
+
+const gameArea =
+document.getElementById("gameArea");
+
+for(let i=0;i<10;i++){
+
+const heart =
+document.createElement("div");
+
+heart.innerHTML = "💖";
+
+heart.classList.add("flying-heart");
+
+heart.style.left =
+Math.random()*250 + "px";
+
+heart.style.animationDelay =
+Math.random()*5 + "s";
+
+heart.onclick = ()=>{
+
+heart.remove();
+
+score++;
+
+document
+.getElementById("score")
+.innerText = score + " / 3";
+
+if(score >= 3){
+
+document
+.getElementById("gamePage")
+.classList.add("hidden");
+
+document
+.getElementById("envelopePage")
+.classList.remove("hidden");
+
+}
+
+};
+
+gameArea.appendChild(heart);
+
+}
+
+}
+
+/* PETALS */
+
+function createPetals(){
+
+for(let i=0;i<40;i++){
+
+const petal =
+document.createElement("div");
+
+petal.innerHTML =
+Math.random() > 0.5 ? "🌹" : "💖";
+
+petal.classList.add("petal");
+
+petal.style.left =
+Math.random()*100 + "vw";
+
+petal.style.fontSize =
+(Math.random()*20 + 20) + "px";
+
+petal.style.animationDuration =
+(Math.random()*3 + 4) + "s";
+
+document.body.appendChild(petal);
+
+setTimeout(()=>{
+
+petal.remove();
+
+},7000);
+
+}
+
+}
+
+/* LETTER */
+
+function openLetter(num){
+
+createPetals();
+
+document
+.getElementById("envelopePage")
+.classList.add("hidden");
+
+document
+.getElementById("letterPage")
+.classList.remove("hidden");
+
+const message =
+messages[num];
+
+let i = 0;
+
+document
+.getElementById("text")
+.innerHTML = "";
+
+function typeWriter(){
+
+if(i < message.length){
+
+document
+.getElementById("text")
+.innerHTML += message.charAt(i);
+
+i++;
+
+setTimeout(typeWriter,35);
+
+}
+
+}
+
+typeWriter();
+
+}
+
+</script>
+
+</body>
+</html>
+"""
+
+HTML(html_content)
